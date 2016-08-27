@@ -128,7 +128,7 @@ of bide is to stay *small and simple*.
 == How fast is *bide*?
 
 Before talking about real performance comparisons and benchmarks, you
-should know that *bide* design is very simple and maybe considered
+should know that *bide* design is very simple and maybe can be considered
 naive. The worst case for the matching algorithm is *O(N)* and *O(1)*
 for resolve operation.
 
