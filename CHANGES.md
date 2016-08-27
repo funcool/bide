@@ -1,7 +1,7 @@
 # Changelog #
 
-## Version 0.1.0 ##
+## Version 1.0.0 ##
 
-Date: Unreleased
+Date: 2016-08-26
 
 - Initial release
