@@ -32,6 +32,7 @@
 ;; --- Low Level Routes API
 
 (defn ^boolean router?
+  "Check if the `v` is a Router instance."
   [v]
   (rtr/isRouter v))
 
@@ -46,13 +47,15 @@
   (rtr/insert router path name))
 
 (defn match
+  "Try to match a path to a specific route in the router, returns `nil`
+  if the no match is found."
   [router path]
   (let [[name params] (into [] (rtr/match router path))]
     (when name
       [name (js->clj params :keywordize-keys true)])))
 
 (defn build
-  "Build a router with the provided routes."
+  "A helper for compile a vector of routes in a router instance."
   [routes]
   {:pre [(vector? routes)]}
   (reduce (fn [router [path name]]
