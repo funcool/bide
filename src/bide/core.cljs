@@ -100,7 +100,7 @@
     (e/listen history History.EventType.NAVIGATE -on-navigate)
     (.replaceToken history initial-token)
     (on-navigate initial-loc)
-    (reify IRouter
+    (specify! router
       (-navigare [_ location params]
         (.setToken history (resolve location params)))
       (-replace-location [_ location params]
