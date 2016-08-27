@@ -33,7 +33,7 @@ Just import the core namespace and start building the router:
 (ns myapp.core
   (:require [bide.core :as r]))
 
-(def routes
+(def router
   (r/build [["/api/auth" :myapp/auth]
             ["/api/users/:id" :myapp/user-by-id]]))
 ----
@@ -43,19 +43,19 @@ Now, you can perform a basic operations such that *match* and *resolve*:
 
 [source, clojure]
 ----
-(r/match routes "/api/auth")
+(r/match router "/api/auth")
 ;; => [:myapp/auth {}]
 
-(r/match routes "/api/users/1")
+(r/match router "/api/users/1")
 ;; => [:myapp/user-by-id {:id "1"}]
 
-(r/match routes "/api/other")
+(r/match router "/api/other")
 ;; => nil
 
-(r/reverse routes :myapp/auth)
+(r/reverse router :myapp/auth)
 ;; => "/api/auth"
 
-(r/reverse routes :myapp/user-by-id {:id 2})
+(r/reverse router :myapp/user-by-id {:id 2})
 ;; => "/api/users/2"
 ----
 
@@ -69,9 +69,8 @@ the builtin helpers that uses goog.History api under the hood:
   [name params]
   (println "Route change to: " name params))
 
-(def router
-  (r/start! router {:default :myapp/auth
-                    :on-navigate on-navigate}))
+(r/start! router {:default :myapp/auth
+                  :on-navigate on-navigate})
 ----
 
 And finally, you can force the navigation trigger using the `navigate!` helper
