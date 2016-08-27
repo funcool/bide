@@ -134,7 +134,7 @@ for resolve operation.
 
 But considering the fact that you are not going to have thousands route entries,
 the match operation works pretty well. This is a comparison of the equivalent
-operations with link:[bidi] library:
+operations with link:https://github.com/juxt/bidi[bidi] library:
 
 [source, text]
 ----
