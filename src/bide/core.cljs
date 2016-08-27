@@ -114,7 +114,7 @@
             initial-loc (-match initial-token)]
         (e/listen history History.EventType.NAVIGATE -on-navigate)
         (.replaceToken history initial-token)
-        (js/setTimeout #(apply on-navigate initial-loc) 0)
+        (apply on-navigate initial-loc)
         (specify! router
           IRouter
           (-navigare [_ location params]

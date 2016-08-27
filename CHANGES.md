@@ -1,5 +1,12 @@
 # Changelog #
 
+## Version 1.0.3 ##
+
+Date: 2016-08-26
+
+- Disable async call of the initial navigate event.
+
+
 ## Version 1.0.2 ##
 
 Date: 2016-08-26
