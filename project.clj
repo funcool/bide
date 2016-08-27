@@ -12,6 +12,9 @@
   :test-paths ["test"]
   :jar-exclusions [#"\.swp|\.swo|user.clj"]
 
+  :profiles
+  {:dev {:dependencies [[bidi "2.0.9"]]}}
+
   :codeina {:sources ["src"]
             :reader :clojurescript
             :target "doc/dist/latest/api"
