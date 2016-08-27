@@ -5,7 +5,7 @@
 (let [start (System/nanoTime)]
   (b/build
    (b/inputs "test" "src")
-   {:main 'bide.core-tests
+   {:main 'bide.tests.core-tests
     :output-to "out/tests.js"
     :output-dir "out"
     :target :nodejs
