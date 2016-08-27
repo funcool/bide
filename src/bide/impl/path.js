@@ -8,7 +8,7 @@
  * @license MIT License <https://opensource.org/licenses/MIT>
  */
 
-"use strict"
+"use strict";
 
 goog.provide("bide.impl.path");
 
@@ -34,7 +34,7 @@ goog.scope(function() {
     // "/route(\\d+)"  => [undefined, undefined, undefined, "\d+", undefined, undefined]
     // "/*"            => ["/", undefined, undefined, undefined, undefined, "*"]
     '([\\/.])?(?:(?:\\:(\\w+)(?:\\(((?:\\\\.|[^\\\\()])+)\\))?|\\(((?:\\\\.|[^\\\\()])+)\\))([+*?])?|(\\*))'
-  ].join('|'), 'g')
+  ].join('|'), 'g');
 
   /**
    * Parse a string for the raw tokens.

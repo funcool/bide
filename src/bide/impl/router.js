@@ -1,5 +1,5 @@
 /**
- * router - a trie based router implementation.
+ * router
  *
  * @author Andrey Antukh <niwi@niwi.nz>, 2016
  * @license BSD License <https://opensource.org/licenses/BSD-2-Clause>
