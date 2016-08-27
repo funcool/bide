@@ -6,5 +6,5 @@
    :output-to "out/benchmarks.js"
    :output-dir "out/benchmarks"
    :optimizations :none
-   :pretty-print true
+   :pretty-print false
    :verbose true})
