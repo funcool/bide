@@ -64,13 +64,13 @@ goog.scope(function() {
   }
 
   /**
-   * Lookup a path in the router.
+   * Match a path in the router.
    *
    * @param {!Router} router
    * @param {!string} path
    * @return {Array<*>}
    */
-  function lookup(router, path) {
+  function match(router, path) {
     var items = router.items;
     var result = null;
     var item = null;
@@ -97,6 +97,10 @@ goog.scope(function() {
       if (goog.isDefAndNotNull(res)) {
         params[key.name] = res;
       }
+    }
+
+    if (isEmpty(params)) {
+      params = null;
     }
 
     return [item.name, params];
@@ -131,10 +135,17 @@ goog.scope(function() {
     return new Router();
   }
 
+  function isEmpty(obj) {
+    for (var x in obj) { return false; }
+    return true;
+  }
+
   var module = bide.impl.router;
   module.insert = insert;
-  module.lookup = lookup;
+  module.match = match;
   module.resolve = resolve;
   module.isRouter = isRouter;
   module.empty = empty;
+
+
 });

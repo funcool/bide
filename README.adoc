@@ -39,15 +39,18 @@ Just import the core namespace and start building the router:
 ----
 
 
-Now, you can perform a basic operations such that *lookup* and *resolve*:
+Now, you can perform a basic operations such that *match* and *resolve*:
 
 [source, clojure]
 ----
-(r/lookup routes "/api/auth")
+(r/match routes "/api/auth")
 ;; => [:myapp/auth {}]
 
-(r/lookup routes "/api/users/1")
+(r/match routes "/api/users/1")
 ;; => [:myapp/user-by-id {:id "1"}]
+
+(r/match routes "/api/other")
+;; => nil
 
 (r/reverse routes :myapp/auth)
 ;; => "/api/auth"

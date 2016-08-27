@@ -45,10 +45,11 @@
   [router path name]
   (rtr/insert router path name))
 
-(defn lookup
+(defn match
   [router path]
-  (let [[name params] (into [] (rtr/lookup router path))]
-    [name (js->clj params :keywordize-keys true)]))
+  (let [[name params] (into [] (rtr/match router path))]
+    (when name
+      [name (js->clj params :keywordize-keys true)])))
 
 (defn build
   "Build a router with the provided routes."
@@ -80,10 +81,10 @@
   api for browser history event watching mechanism."
   [router {:keys [on-navigate default] :as opts}]
   (letfn [(-on-navigate [event]
-            (let [[name params] (-lookup (.-token event))]
+            (let [[name params] (-match (.-token event))]
               (on-navigate name params)))
-          (-lookup [token]
-            (or (lookup router token) [default nil]))
+          (-match [token]
+            (or (match router token) [default nil]))
           (-initial-token [history]
             (let [token (.getToken history)]
               (if-not (str/blank? token)
@@ -92,7 +93,7 @@
 
   (let [history (doto (History.) (.setEnabled true))
         initial-token (-initial-token history)
-        initial-loc (-lookup initial-token)]
+        initial-loc (-match initial-token)]
     (e/listen history History.EventType.NAVIGATE -on-navigate)
     (.replaceToken history initial-token)
     (on-navigate initial-loc)
