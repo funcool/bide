@@ -101,6 +101,7 @@
     (.replaceToken history initial-token)
     (on-navigate initial-loc)
     (specify! router
+      IRouter
       (-navigare [_ location params]
         (.setToken history (resolve location params)))
       (-replace-location [_ location params]
