@@ -81,31 +81,34 @@
 
 (defn start!
   "Starts the bide routing handling using the goog.History
-  api for browser history event watching mechanism."
+  api as browser history event watching mechanism."
   [router {:keys [on-navigate default] :as opts}]
-  (letfn [(-on-navigate [event]
-            (let [[name params] (-match (.-token event))]
-              (on-navigate name params)))
-          (-match [token]
-            (or (match router token) [default nil]))
-          (-initial-token [history]
-            (let [token (.getToken history)]
-              (if-not (str/blank? token)
-                token
-                (or (resolve (:name default) (:params default)) "/"))))]
-
-  (let [history (doto (History.) (.setEnabled true))
-        initial-token (-initial-token history)
-        initial-loc (-match initial-token)]
-    (e/listen history History.EventType.NAVIGATE -on-navigate)
-    (.replaceToken history initial-token)
-    (on-navigate initial-loc)
-    (specify! router
-      IRouter
-      (-navigare [_ location params]
-        (.setToken history (resolve location params)))
-      (-replace-location [_ location params]
-        (.replaceToken history (resolve location params)))))))
+  (let [default (if (vector? default) default [default nil])]
+    (letfn [(-on-navigate [event]
+              (let [[name params] (-match (.-token event))]
+                (on-navigate name params)))
+            (-match [token]
+              (let [result (match router token)]
+                (or result default)))
+            (-initial-token [history]
+              (let [token (.getToken history)]
+                (if (str/blank? token)
+                  (or (apply resolve router default) "/")
+                  token)))]
+      (let [history (doto (History.) (.setEnabled true))
+            initial-token (-initial-token history)
+            initial-loc (-match initial-token)]
+        (e/listen history History.EventType.NAVIGATE -on-navigate)
+        (.replaceToken history initial-token)
+        (js/setTimeout #(apply on-navigate initial-loc) 0)
+        (specify! router
+          IRouter
+          (-navigare [_ location params]
+            (when-let [path (resolve router location params)]
+              (.setToken history path)))
+          (-replace-location [_ location params]
+            (when-let [path (resolve router location params)]
+              (.replaceToken history path))))))))
 
 (defn navigate!
   "Trigger a navigate event to a specific location."
