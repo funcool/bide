@@ -29,6 +29,19 @@
             [goog.events :as e])
   (:import goog.History))
 
+;; --- Protocols
+
+(defprotocol IRouter
+  (-navigare [_ loc params])
+  (-replace-location [_ loc params]))
+
+(defprotocol IPathRepr
+  (-repr [_] "Return a representation of object in path."))
+
+(extend-protocol IPathRepr
+  object (-repr [it] (str it))
+  number (-repr [it] it))
+
 ;; --- Low Level Routes API
 
 (defn ^boolean router?
@@ -70,14 +83,14 @@
    (resolve router name {}))
   ([router name params]
    {:pre [(router? router)]}
-   (let [params (clj->js params)]
+   (let [params (reduce-kv (fn [m k v]
+                             (aset m (key->js k) (-repr v))
+                             m)
+                           (js-obj)
+                           params)]
      (rtr/resolve router name params))))
 
 ;; --- Browser History Binding API
-
-(defprotocol IRouter
-  (-navigare [_ loc params])
-  (-replace-location [_ loc params]))
 
 (defn start!
   "Starts the bide routing handling using the goog.History
