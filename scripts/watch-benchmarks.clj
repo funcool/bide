@@ -1,10 +1,10 @@
 (require '[cljs.build.api :as b])
 
 (b/watch (b/inputs "test" "src")
-  {:main 'bide.tests.core-tests
+  {:main 'bide.tests.benchmarks
    :target :nodejs
-   :output-to "out/tests.js"
-   :output-dir "out/tests"
+   :output-to "out/benchmarks.js"
+   :output-dir "out/benchmarks"
    :optimizations :none
    :pretty-print true
    :verbose true})

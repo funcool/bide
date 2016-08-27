@@ -125,6 +125,33 @@ libraries, and many of missing stuff will be added over time. But the main purpo
 of bide is to stay *small and simple*.
 
 
+== How fast is *bide*?
+
+Before talking about real performance comparisons and benchmarks, you
+should know that *bide* design is very simple and maybe considered
+naive. The worst case for the matching algorithm is *O(N)* and *O(1)*
+for resolve operation.
+
+But considering the fact that you are not going to have thousands route entries,
+the match operation works pretty well. This is a comparison of the equivalent
+operations with link:[bidi] library:
+
+[source, text]
+----
+$ node out/benchmarks.js
+op=resolve lib=bidi ops=10000
+"Elapsed time: 108.318159 msecs"
+op=resolve lib=bide ops=10000
+"Elapsed time: 53.742332 msecs"
+op=match lib=bidi ops=10000
+"Elapsed time: 937.541619 msecs"
+op=match lib=bide ops=10000
+"Elapsed time: 106.668479 msecs"
+----
+
+I compared it to bidi just because before this library I was bidi user.
+
+
 == License
 
 _bide_ is licensed under BSD (2-Clause) license.

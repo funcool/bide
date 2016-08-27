@@ -7,7 +7,7 @@
    (b/inputs "test" "src")
    {:main 'bide.tests.core-tests
     :output-to "out/tests.js"
-    :output-dir "out"
+    :output-dir "out/tests"
     :target :nodejs
     :optimizations :advanced
     :pretty-print true
