@@ -8,7 +8,7 @@ image:http://clojars.org/funcool/bide/latest-version.svg["Clojars Project", link
 
 A simple routing library for ClojureScript that uses Express like syntax.
 
-[quote, A Basque proverb]
+[quote, A Basque proverb.]
 ____
 Egiak ez ditu bi bide
 ____
@@ -20,7 +20,7 @@ Add the following dependency to your project.clj file:
 
 [source,clojure]
 ----
-[funcool/bide "0.1.0"]
+[funcool/bide "1.0.0-SNAPSHOT"]
 ----
 
 
