@@ -34,8 +34,8 @@ Just import the core namespace and start building the router:
   (:require [bide.core :as r]))
 
 (def router
-  (r/build [["/api/auth" :myapp/auth]
-            ["/api/users/:id" :myapp/user-by-id]]))
+  (r/router [["/api/auth" :myapp/auth]
+             ["/api/users/:id" :myapp/user-by-id]]))
 ----
 
 

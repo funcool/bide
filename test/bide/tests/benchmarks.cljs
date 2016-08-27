@@ -13,7 +13,7 @@
         ["workspace/" [[[:project "/" :page] :workspace/page]]]]])
 
 (def bide-routes
-  (bide/build
+  (bide/router
    [["/auth/login" :auth/login]
     ["/auth/recovery/token/:token" :auth/recovery]
     ;; ["/settings/profile" :settings/profile]

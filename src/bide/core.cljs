@@ -54,7 +54,7 @@
     (when name
       [name (js->clj params :keywordize-keys true)])))
 
-(defn build
+(defn router
   "A helper for compile a vector of routes in a router instance."
   [routes]
   {:pre [(vector? routes)]}
