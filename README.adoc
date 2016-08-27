@@ -92,45 +92,35 @@ Just open an issue or PR ;)
 Just because the existing ones are to complex and with very bloated documentation
 that does not explains the essential for the basic use of library.
 
-This library is designed with simplicity in mind and make the url definition much
-more eye friendly.
-
-Many other libraries are focusing on using clojure datastructures for represent the
+Many other libraries are focusing on using clojure data structures for represent the
 routing in some kind of tree. The concept is very nice but in practice, when you
-have complex routing paths, the things becomes dificult to understand. Just let see
-an example:
+have complex routing paths, the things becomes dificult to read and understand at
+quick view.
 
-.Real example using *bidi* routing library
+Let see a real example using *bidi* routing library:
+
 [source, clojure]
 ----
 (def routes
   ["/" [["auth/login" :auth/login]
         [["auth/recovery/token/" :token] :auth/recovery]
-        ["settings/" [["profile" :settings/profile]
-                      ["password" :settings/password]
-                      ["notifications" :settings/notifications]]]
         ["workspace/" [[[:project-uuid "/" :page-uuid] :workspace/page]]]]])
----
+----
 
-And then, let see how it can be represented with *bide*:
+The mental effort for read and understand the routing defined in this way is
+considerable in comparison to *bide*. Let see an example:
 
 [source, clojure]
 ----
 (def routes
   [["/auth/login" :auth/login]
    ["/auth/recovery/token/:token" :auth/recovery]
-   ["/settings/profile" :settings/profile]
-   ["/settings/password" :settings/password]
-   ["/settings/notifications" :settings/notifications]
    ["/workspace/:project-uuid/:page-uuid" :workspace/page]])
 ----
 
-Yes, it has some repetitions in comparison to the bidi example, but in terms of
-readability *bide* is a clean winner.
-
-Of course, just now *bide* does not offers all the features that the other libraries,
-and many of missing stuff will be added over time. But the main purpose of bide is
-to stay *small and simple*.
+Of course, just now *bide* does not offers all the features that the other
+libraries, and many of missing stuff will be added over time. But the main purpose
+of bide is to stay *small and simple*.
 
 
 == License
