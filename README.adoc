@@ -52,10 +52,10 @@ Now, you can perform a basic operations such that *match* and *resolve*:
 (r/match router "/api/other")
 ;; => nil
 
-(r/reverse router :myapp/auth)
+(r/resolve router :myapp/auth)
 ;; => "/api/auth"
 
-(r/reverse router :myapp/user-by-id {:id 2})
+(r/resolve router :myapp/user-by-id {:id 2})
 ;; => "/api/users/2"
 ----
 
