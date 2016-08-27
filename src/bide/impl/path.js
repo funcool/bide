@@ -442,9 +442,6 @@ goog.scope(function() {
   self.parse = pathToRegexp;
   self.compile = compile;
 
-  // self.parseRoute = parse;
-  // self.compileRoute = compile;
-
   // module.exports = pathToRegexp
   // module.exports.parse = parse
   // module.exports.compile = compile

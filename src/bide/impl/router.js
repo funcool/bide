@@ -19,7 +19,7 @@ goog.scope(function() {
    */
   function Router() {
     this.items = [];
-    this.map = new Map();
+    this.map = {};
   }
 
   /**
@@ -58,7 +58,7 @@ goog.scope(function() {
     }
 
     router.items.push(route);
-    router.map.set(name.fqn, route);
+    router.map[name.fqn] = route;
 
     return router;
   }
@@ -88,8 +88,6 @@ goog.scope(function() {
       return null;
     }
 
-    // TODO: handle repeated
-
     var params = {};
     for (var i=0; i<item.keys.length; i++) {
       var key = item.keys[i];
@@ -116,9 +114,7 @@ goog.scope(function() {
    */
 
   function resolve(router, name, params) {
-    var route = router.map.get(name.fqn, null);
-
-    // console.log(router.map);
+    var route = router.map[name.fqn] || null;
 
     if (!goog.isDefAndNotNull(route)) {
       return null;
@@ -146,6 +142,4 @@ goog.scope(function() {
   module.resolve = resolve;
   module.isRouter = isRouter;
   module.empty = empty;
-
-
 });
