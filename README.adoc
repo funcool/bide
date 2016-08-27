@@ -149,7 +149,7 @@ op=match lib=bide ops=10000
 "Elapsed time: 98.864120 msecs"
 ----
 
-I compared it to bidi just because before this library I was bidi user.
+I compared it to bidi just because before create this library I was bidi user.
 
 
 == License
