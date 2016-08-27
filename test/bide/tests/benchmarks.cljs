@@ -7,25 +7,16 @@
 (def bidi-routes
   ["/" [["auth/login" :auth/login]
         [["auth/recovery/token/" :token] :auth/recovery]
-        ;; ["settings/" [["profile" :settings/profile]
-        ;;               ["password" :settings/password]
-        ;;               ["notifications" :settings/notifications]]]
         ["workspace/" [[[:project "/" :page] :workspace/page]]]]])
 
 (def bide-routes
   (bide/router
    [["/auth/login" :auth/login]
     ["/auth/recovery/token/:token" :auth/recovery]
-    ;; ["/settings/profile" :settings/profile]
-    ;; ["/settings/password" :settings/password]
-    ;; ["/settings/notifications" :settings/notifications]
     ["/workspace/:project/:page" :workspace/page]]))
 
 (defn benchmark-bidi-resolve
   [ops]
-  ;; Check
-  ;; (println (bidi/path-for bidi-routes :workspace/page :project 1 :page 1))
-
   ;; Warm Up
   (dotimes [i ops]
     (bidi/path-for bidi-routes :workspace/page :project 1 :page 1))
@@ -36,9 +27,6 @@
 
 (defn benchmark-bide-resolve
   [ops]
-  ;; Check
-  ;; (println (bide/resolve bide-routes :workspace/page {:project 1 :page 1}))
-
   ;; Warm Up
   (dotimes [i ops]
     (bide/resolve bide-routes :workspace/page {:project 1 :page 1}))
@@ -49,10 +37,6 @@
 
 (defn benchmark-bidi-match
   [ops]
-  ;; Check
-  ;; (println
-  ;;  (bidi/match-route bidi-routes "/workspace/1/1"))
-
   ;; Warn Up
   (dotimes [i ops]
     (bidi/match-route bidi-routes "/workspace/1/1"))
@@ -63,10 +47,6 @@
 
 (defn benchmark-bide-match
   [ops]
-  ;; Check
-  ;; (println
-  ;;  (bide/match bide-routes "/workspace/1/1"))
-
   ;; Warm Up
   (dotimes [i ops]
     (bide/match bide-routes "/workspace/1/1"))
@@ -94,5 +74,3 @@
     (benchmark-bide-match 10000)))
 
 (set! *main-cli-fn* main)
-
-
