@@ -40,7 +40,8 @@
 
 (extend-protocol IPathRepr
   object (-repr [it] (str it))
-  number (-repr [it] it))
+  number (-repr [it] it)
+  string (-repr [it] it))
 
 ;; --- Low Level Routes API
 
