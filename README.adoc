@@ -140,13 +140,13 @@ operations with link:[bidi] library:
 ----
 $ node out/benchmarks.js
 op=resolve lib=bidi ops=10000
-"Elapsed time: 108.318159 msecs"
+"Elapsed time: 90.989215 msecs"
 op=resolve lib=bide ops=10000
-"Elapsed time: 53.742332 msecs"
+"Elapsed time: 19.447844 msecs"
 op=match lib=bidi ops=10000
-"Elapsed time: 937.541619 msecs"
+"Elapsed time: 1070.330668 msecs"
 op=match lib=bide ops=10000
-"Elapsed time: 106.668479 msecs"
+"Elapsed time: 98.864120 msecs"
 ----
 
 I compared it to bidi just because before this library I was bidi user.
