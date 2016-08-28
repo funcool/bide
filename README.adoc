@@ -6,7 +6,7 @@ image:http://clojars.org/funcool/bide/latest-version.svg["Clojars Project", link
 
 == Introduction
 
-A simple routing library for ClojureScript that uses Express like syntax.
+A simple routing library for ClojureScript that uses Express-like syntax.
 
 [quote, A Basque proverb.]
 ____
@@ -16,7 +16,7 @@ ____
 
 == Install
 
-Add the following dependency to your project.clj file:
+Add the following dependency to your `project.clj` file:
 
 [source,clojure]
 ----
@@ -39,7 +39,7 @@ Just import the core namespace and start building the router:
 ----
 
 
-Now, you can perform a basic operations such that *match* and *resolve*:
+Now, you can perform basic operations such as `match` and `resolve`:
 
 [source, clojure]
 ----
@@ -59,8 +59,8 @@ Now, you can perform a basic operations such that *match* and *resolve*:
 ;; => "/api/users/2"
 ----
 
-And finally, you can integrate it in your ClojureScript web application using
-the builtin helpers that uses goog.History api under the hood:
+In addition, you can integrate it in your ClojureScript web application using
+the provided builtin helpers. It uses `goog.History` API under the hood:
 
 [source, clojure]
 ----
@@ -73,7 +73,7 @@ the builtin helpers that uses goog.History api under the hood:
                   :on-navigate on-navigate})
 ----
 
-And finally, you can force the navigation trigger using the `navigate!` helper
+Finally, you can force the navigation trigger by using the `navigate!` helper
 function:
 
 [source, clojure]
@@ -91,15 +91,14 @@ Just open an issue or PR ;)
 
 === Why another routing library?
 
-Just because the existing ones are to complex and with very bloated documentation
-that does not explains the essential for the basic use of library.
+Existing solutions out there are complex and generally bloated wih irrelevant
+documentation.
 
-Many other libraries are focusing on using clojure data structures for represent the
-routing in some kind of tree. The concept is very nice but in practice, when you
-have complex routing paths, the things becomes dificult to read and understand at
-quick view.
+Most libraries work with native Clojure data structures for representing the
+routing configuration. It's a great idea, but it does not work very well once
+your proyect scales. Things get out of hand pretty fast.
 
-Let see a real example using *bidi* routing library:
+An example of this with link:https://github.com/juxt/bidi[bidi] routing library:
 
 [source, clojure]
 ----
@@ -109,8 +108,8 @@ Let see a real example using *bidi* routing library:
         ["workspace/" [[[:project-uuid "/" :page-uuid] :workspace/page]]]]])
 ----
 
-The mental effort for read and understand the routing defined in this way is
-considerable in comparison to *bide*. Let see an example:
+The mental effort required to read and understand the configuration defined like this
+is considerable. Now, let's see an example using *bide*:
 
 [source, clojure]
 ----
@@ -120,9 +119,9 @@ considerable in comparison to *bide*. Let see an example:
    ["/workspace/:project-uuid/:page-uuid" :workspace/page]])
 ----
 
-Of course, just now *bide* does not offers all the features that the other
-libraries, and many of missing stuff will be added over time. But the main purpose
-of bide is to stay *small and simple*.
+As you can imagine, a simple library like *bide* does not offer all the features
+provided by other solutions. New features will be added on-demand. However, we plan
+to stay as *small and simple* as possible.
 
 
 == How fast is *bide*?
@@ -132,9 +131,9 @@ should know that *bide* design is very simple and maybe can be considered
 naive. The worst case for the matching algorithm is *O(N)* and *O(1)*
 for resolve operation.
 
-But considering the fact that you are not going to have thousands route entries,
-the match operation works pretty well. This is a comparison of the equivalent
-operations with link:https://github.com/juxt/bidi[bidi] library:
+Considering that having thousands of entries is very unlikely to happen,
+the match algorithm works pretty well. This is a comparison against the
+same operations with link:https://github.com/juxt/bidi[bidi]:
 
 [source, text]
 ----
@@ -149,8 +148,8 @@ op=match lib=bide ops=10000
 "Elapsed time: 98.864120 msecs"
 ----
 
-I compared it to bidi just because before create this library I was bidi user.
-
+I've been a _bidi_ user for quite some time, that's why I choose this library to
+run the benchmarks.
 
 == License
 
