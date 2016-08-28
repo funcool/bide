@@ -117,7 +117,6 @@ goog.scope(function() {
    * @param {Object<string,*>} params
    * @return {Array<?>}
    */
-
   function resolve(router, name, params) {
     var routes = router.map[name.fqn] || null;
 
@@ -152,14 +151,31 @@ goog.scope(function() {
     return null;
   }
 
+  /**
+   * Check if provided value is an instance of Router
+   *
+   * @param {*} v
+   * @return {boolean}
+   */
   function isRouter(v) {
     return v instanceof Router;
   }
 
+  /**
+   * Create an empty Router instance.
+   *
+   * @return {Router}
+   */
   function empty() {
     return new Router();
   }
 
+  /**
+   * Check if provided obj is empty.
+   *
+   * @param {Object} obj
+   * @return {boolean}
+   */
   function isEmpty(obj) {
     for (var x in obj) { return false; }
     return true;
