@@ -1,5 +1,12 @@
 # Changelog #
 
+## Version 1.0.4 ##
+
+Date: 2016-08-28
+
+- Improve handling of paths with same name but different.
+
+
 ## Version 1.0.3 ##
 
 Date: 2016-08-26
