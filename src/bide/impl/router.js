@@ -58,7 +58,12 @@ goog.scope(function() {
     }
 
     router.items.push(route);
-    router.map[name.fqn] = route;
+
+    if (router.map[name.fqn] === undefined) {
+      router.map[name.fqn] = [route];
+    } else {
+      router.map[name.fqn].push(route);
+    }
 
     return router;
   }
@@ -114,13 +119,37 @@ goog.scope(function() {
    */
 
   function resolve(router, name, params) {
-    var route = router.map[name.fqn] || null;
+    var routes = router.map[name.fqn] || null;
 
-    if (!goog.isDefAndNotNull(route)) {
+    if (!goog.isDefAndNotNull(routes)) {
       return null;
     }
 
-    return route.format(params);
+    // If params is empty just check all possible
+    // options and return the first one that matches
+    // in case contrary check only routes with params
+    // because route without params does not raise
+    // exceptions causing that they are always elected
+    // independently if params are passed or not.
+    if (isEmpty(params)) {
+      for (var i=0; i<routes.length; i++) {
+        try {
+          return routes[i].format(params);
+        } catch (e) {}
+      }
+    } else {
+      for (var i=0; i<routes.length; i++) {
+        if (routes[i].keys.length === 0) {
+          continue;
+        }
+
+        try {
+          return routes[i].format(params);
+        } catch (e) {}
+      }
+    }
+
+    return null;
   }
 
   function isRouter(v) {
