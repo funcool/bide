@@ -1,5 +1,12 @@
 # Changelog #
 
+## Version 1.0.5 ##
+
+Date: 2016-09-30
+
+- Add IPathRepr impl for `nil` and `keyword`.
+
+
 ## Version 1.0.4 ##
 
 Date: 2016-08-28
