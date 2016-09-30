@@ -36,12 +36,15 @@
   (-replace-location [_ loc params]))
 
 (defprotocol IPathRepr
+  "Path parameters coercion protocol."
   (-repr [_] "Return a representation of object in path."))
 
 (extend-protocol IPathRepr
+  nil    (-repr [it] "")
   object (-repr [it] (str it))
   number (-repr [it] it)
-  string (-repr [it] it))
+  string (-repr [it] it)
+  cljs.core.Keyword (-repr [it] (name it)))
 
 ;; --- Low Level Routes API
 
