@@ -1,5 +1,12 @@
 # Changelog #
 
+## Version 1.0.6 ##
+
+Date: 2016-11-27
+
+- Fix wrong handling of `-` char in url params.
+
+
 ## Version 1.0.5 ##
 
 Date: 2016-09-30
