@@ -33,7 +33,7 @@ goog.scope(function() {
     // "/:test(\\d+)?" => ["/", "test", "\d+", undefined, "?", undefined]
     // "/route(\\d+)"  => [undefined, undefined, undefined, "\d+", undefined, undefined]
     // "/*"            => ["/", undefined, undefined, undefined, undefined, "*"]
-    '([\\/.])?(?:(?:\\:(\\w+)(?:\\(((?:\\\\.|[^\\\\()])+)\\))?|\\(((?:\\\\.|[^\\\\()])+)\\))([+*?])?|(\\*))'
+    '([\\/.])?(?:(?:\\:([\\w\\-]+)(?:\\(((?:\\\\.|[^\\\\()])+)\\))?|\\(((?:\\\\.|[^\\\\()])+)\\))([+*?])?|(\\*))'
   ].join('|'), 'g');
 
   /**
