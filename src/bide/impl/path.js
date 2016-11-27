@@ -43,44 +43,44 @@ goog.scope(function() {
    * @return {!Array}
    */
   function parse (str) {
-    var tokens = []
-    var key = 0
-    var index = 0
-    var path = ''
-    var res
+    var tokens = [];
+    var key = 0;
+    var index = 0;
+    var path = '';
+    var res;
 
     while ((res = PATH_REGEXP.exec(str)) != null) {
-      var m = res[0]
-      var escaped = res[1]
-      var offset = res.index
-      path += str.slice(index, offset)
-      index = offset + m.length
+      var m = res[0];
+      var escaped = res[1];
+      var offset = res.index;
+      path += str.slice(index, offset);
+      index = offset + m.length;
 
       // Ignore already escaped sequences.
       if (escaped) {
-        path += escaped[1]
-        continue
+        path += escaped[1];
+        continue;
       }
 
-      var next = str[index]
-      var prefix = res[2]
-      var name = res[3]
-      var capture = res[4]
-      var group = res[5]
-      var modifier = res[6]
-      var asterisk = res[7]
+      var next = str[index];
+      var prefix = res[2];
+      var name = res[3];
+      var capture = res[4];
+      var group = res[5];
+      var modifier = res[6];
+      var asterisk = res[7];
 
       // Push the current path onto the tokens.
       if (path) {
-        tokens.push(path)
-        path = ''
+        tokens.push(path);
+        path = '';
       }
 
-      var partial = prefix != null && next != null && next !== prefix
-      var repeat = modifier === '+' || modifier === '*'
-      var optional = modifier === '?' || modifier === '*'
-      var delimiter = res[2] || '/'
-      var pattern = capture || group || (asterisk ? '.*' : '[^' + delimiter + ']+?')
+      var partial = prefix != null && next != null && next !== prefix;
+      var repeat = modifier === '+' || modifier === '*';
+      var optional = modifier === '?' || modifier === '*';
+      var delimiter = res[2] || '/';
+      var pattern = capture || group || (asterisk ? '.*' : '[^' + delimiter + ']+?');
 
       tokens.push({
         name: name || key++,
@@ -91,20 +91,20 @@ goog.scope(function() {
         partial: partial,
         asterisk: !!asterisk,
         pattern: escapeGroup(pattern)
-      })
+      });
     }
 
     // Match any characters still remaining.
     if (index < str.length) {
-      path += str.substr(index)
+      path += str.substr(index);
     }
 
     // If the path exists, push it onto the end.
     if (path) {
-      tokens.push(path)
+      tokens.push(path);
     }
 
-    return tokens
+    return tokens;
   }
 
   /**
@@ -114,7 +114,7 @@ goog.scope(function() {
    * @return {!function(Object=, Object=)}
    */
   function compile (str) {
-    return tokensToFunction(parse(str))
+    return tokensToFunction(parse(str));
   }
 
   /**
@@ -125,8 +125,8 @@ goog.scope(function() {
    */
   function encodeURIComponentPretty (str) {
     return encodeURI(str).replace(/[\/?#]/g, function (c) {
-      return '%' + c.charCodeAt(0).toString(16).toUpperCase()
-    })
+      return '%' + c.charCodeAt(0).toString(16).toUpperCase();
+    });
   }
 
   /**
@@ -137,8 +137,8 @@ goog.scope(function() {
    */
   function encodeAsterisk (str) {
     return encodeURI(str).replace(/[?#]/g, function (c) {
-      return '%' + c.charCodeAt(0).toString(16).toUpperCase()
-    })
+      return '%' + c.charCodeAt(0).toString(16).toUpperCase();
+    });
   }
 
   /**
@@ -146,83 +146,83 @@ goog.scope(function() {
    */
   function tokensToFunction (tokens) {
     // Compile all the tokens into regexps.
-    var matches = new Array(tokens.length)
+    var matches = new Array(tokens.length);
 
     // Compile all the patterns before compilation.
     for (var i = 0; i < tokens.length; i++) {
       if (typeof tokens[i] === 'object') {
-        matches[i] = new RegExp('^(?:' + tokens[i].pattern + ')$')
+        matches[i] = new RegExp('^(?:' + tokens[i].pattern + ')$');
       }
     }
 
     return function (obj, opts) {
-      var path = ''
-      var data = obj || {}
-      var options = opts || {}
-      var encode = options.pretty ? encodeURIComponentPretty : encodeURIComponent
+      var path = '';
+      var data = obj || {};
+      var options = opts || {};
+      var encode = options.pretty ? encodeURIComponentPretty : encodeURIComponent;
 
       for (var i = 0; i < tokens.length; i++) {
-        var token = tokens[i]
+        var token = tokens[i];
 
         if (typeof token === 'string') {
-          path += token
+          path += token;
 
-          continue
+          continue;
         }
 
-        var value = data[token.name]
-        var segment
+        var value = data[token.name];
+        var segment;
 
         if (value == null) {
           if (token.optional) {
             // Prepend partial segment prefixes.
             if (token.partial) {
-              path += token.prefix
+              path += token.prefix;
             }
 
-            continue
+            continue;
           } else {
-            throw new TypeError('Expected "' + token.name + '" to be defined')
+            throw new TypeError('Expected "' + token.name + '" to be defined');
           }
         }
 
         if (isArray(value)) {
           if (!token.repeat) {
-            throw new TypeError('Expected "' + token.name + '" to not repeat, but received `' + JSON.stringify(value) + '`')
+            throw new TypeError('Expected "' + token.name + '" to not repeat, but received `' + JSON.stringify(value) + '`');
           }
 
           if (value.length === 0) {
             if (token.optional) {
-              continue
+              continue;
             } else {
-              throw new TypeError('Expected "' + token.name + '" to not be empty')
+              throw new TypeError('Expected "' + token.name + '" to not be empty');
             }
           }
 
           for (var j = 0; j < value.length; j++) {
-            segment = encode(value[j])
+            segment = encode(value[j]);
 
             if (!matches[i].test(segment)) {
-              throw new TypeError('Expected all "' + token.name + '" to match "' + token.pattern + '", but received `' + JSON.stringify(segment) + '`')
+              throw new TypeError('Expected all "' + token.name + '" to match "' + token.pattern + '", but received `' + JSON.stringify(segment) + '`');
             }
 
-            path += (j === 0 ? token.prefix : token.delimiter) + segment
+            path += (j === 0 ? token.prefix : token.delimiter) + segment;
           }
 
-          continue
+          continue;
         }
 
-        segment = token.asterisk ? encodeAsterisk(value) : encode(value)
+        segment = token.asterisk ? encodeAsterisk(value) : encode(value);
 
         if (!matches[i].test(segment)) {
-          throw new TypeError('Expected "' + token.name + '" to match "' + token.pattern + '", but received "' + segment + '"')
+          throw new TypeError('Expected "' + token.name + '" to match "' + token.pattern + '", but received "' + segment + '"');
         }
 
-        path += token.prefix + segment
+        path += token.prefix + segment;
       }
 
-      return path
-    }
+      return path;
+    };
   }
 
   /**
@@ -232,7 +232,7 @@ goog.scope(function() {
    * @return {string}
    */
   function escapeString (str) {
-    return str.replace(/([.+*?=^!:${}()[\]|\/\\])/g, '\\$1')
+    return str.replace(/([.+*?=^!:${}()[\]|\/\\])/g, '\\$1');
   }
 
   /**
@@ -242,7 +242,7 @@ goog.scope(function() {
    * @return {string}
    */
   function escapeGroup (group) {
-    return group.replace(/([=!:$\/()])/g, '\\$1')
+    return group.replace(/([=!:$\/()])/g, '\\$1');
   }
 
   /**
@@ -253,8 +253,8 @@ goog.scope(function() {
    * @return {!RegExp}
    */
   function attachKeys (re, keys) {
-    re.keys = keys
-    return re
+    re.keys = keys;
+    return re;
   }
 
   /**
@@ -264,7 +264,7 @@ goog.scope(function() {
    * @return {string}
    */
   function flags (options) {
-    return options.sensitive ? '' : 'i'
+    return options.sensitive ? '' : 'i';
   }
 
   /**
@@ -276,7 +276,7 @@ goog.scope(function() {
    */
   function regexpToRegexp (path, keys) {
     // Use a negative lookahead to match only capturing groups.
-    var groups = path.source.match(/\((?!\?)/g)
+    var groups = path.source.match(/\((?!\?)/g);
 
     if (groups) {
       for (var i = 0; i < groups.length; i++) {
@@ -289,11 +289,11 @@ goog.scope(function() {
           partial: false,
           asterisk: false,
           pattern: null
-        })
+        });
       }
     }
 
-    return attachKeys(path, keys)
+    return attachKeys(path, keys);
   }
 
   /**
@@ -305,15 +305,15 @@ goog.scope(function() {
    * @return {!RegExp}
    */
   function arrayToRegexp (path, keys, options) {
-    var parts = []
+    var parts = [];
 
     for (var i = 0; i < path.length; i++) {
-      parts.push(pathToRegexp(path[i], keys, options).source)
+      parts.push(pathToRegexp(path[i], keys, options).source);
     }
 
-    var regexp = new RegExp('(?:' + parts.join('|') + ')', flags(options))
+    var regexp = new RegExp('(?:' + parts.join('|') + ')', flags(options));
 
-    return attachKeys(regexp, keys)
+    return attachKeys(regexp, keys);
   }
 
   /**
@@ -325,17 +325,17 @@ goog.scope(function() {
    * @return {!RegExp}
    */
   function stringToRegexp (path, keys, options) {
-    var tokens = parse(path)
-    var re = tokensToRegExp(tokens, options)
+    var tokens = parse(path);
+    var re = tokensToRegExp(tokens, options);
 
     // Attach keys back to the regexp.
     for (var i = 0; i < tokens.length; i++) {
       if (typeof tokens[i] !== 'string') {
-        keys.push(tokens[i])
+        keys.push(tokens[i]);
       }
     }
 
-    return attachKeys(re, keys)
+    return attachKeys(re, keys);
   }
 
   /**
@@ -346,39 +346,39 @@ goog.scope(function() {
    * @return {!RegExp}
    */
   function tokensToRegExp (tokens, options) {
-    options = options || {}
+    options = options || {};
 
-    var strict = options.strict
-    var end = options.end !== false
-    var route = ''
-    var lastToken = tokens[tokens.length - 1]
-    var endsWithSlash = typeof lastToken === 'string' && /\/$/.test(lastToken)
+    var strict = options.strict;
+    var end = options.end !== false;
+    var route = '';
+    var lastToken = tokens[tokens.length - 1];
+    var endsWithSlash = typeof lastToken === 'string' && /\/$/.test(lastToken);
 
     // Iterate over the tokens and create our regexp string.
     for (var i = 0; i < tokens.length; i++) {
-      var token = tokens[i]
+      var token = tokens[i];
 
       if (typeof token === 'string') {
-        route += escapeString(token)
+        route += escapeString(token);
       } else {
-        var prefix = escapeString(token.prefix)
-        var capture = '(?:' + token.pattern + ')'
+        var prefix = escapeString(token.prefix);
+        var capture = '(?:' + token.pattern + ')';
 
         if (token.repeat) {
-          capture += '(?:' + prefix + capture + ')*'
+          capture += '(?:' + prefix + capture + ')*';
         }
 
         if (token.optional) {
           if (!token.partial) {
-            capture = '(?:' + prefix + '(' + capture + '))?'
+            capture = '(?:' + prefix + '(' + capture + '))?';
           } else {
-            capture = prefix + '(' + capture + ')?'
+            capture = prefix + '(' + capture + ')?';
           }
         } else {
-          capture = prefix + '(' + capture + ')'
+          capture = prefix + '(' + capture + ')';
         }
 
-        route += capture
+        route += capture;
       }
     }
 
@@ -387,18 +387,18 @@ goog.scope(function() {
     // is valid at the end of a path match, not in the middle. This is important
     // in non-ending mode, where "/test/" shouldn't match "/test//route".
     if (!strict) {
-      route = (endsWithSlash ? route.slice(0, -2) : route) + '(?:\\/(?=$))?'
+      route = (endsWithSlash ? route.slice(0, -2) : route) + '(?:\\/(?=$))?';
     }
 
     if (end) {
-      route += '$'
+      route += '$';
     } else {
       // In non-ending mode, we need the capturing groups to match as much as
       // possible by using a positive lookahead to the end or next path segment.
-      route += strict && endsWithSlash ? '' : '(?=\\/|$)'
+      route += strict && endsWithSlash ? '' : '(?=\\/|$)';
     }
 
-    return new RegExp('^' + route, flags(options))
+    return new RegExp('^' + route, flags(options));
   }
 
   /**
@@ -414,28 +414,28 @@ goog.scope(function() {
    * @return {!RegExp}
    */
   function pathToRegexp (path, keys, options) {
-    keys = keys || []
+    keys = keys || [];
 
     if (!isArray(keys)) {
-      options = /** @type {!Object} */ (keys)
-      keys = []
+      options = /** @type {!Object} */ (keys);
+      keys = [];
     } else if (!options) {
-      options = {}
+      options = {};
     }
 
     if (path instanceof RegExp) {
-      return regexpToRegexp(path, /** @type {!Array} */ (keys))
+      return regexpToRegexp(path, /** @type {!Array} */ (keys));
     }
 
     if (isArray(path)) {
       return arrayToRegexp(
         /** @type {!Array} */ (path),
-        /** @type {!Array} */ (keys), options)
+        /** @type {!Array} */ (keys), options);
     }
 
     return stringToRegexp(
       /** @type {string} */ (path),
-      /** @type {!Array} */ (keys), options)
+      /** @type {!Array} */ (keys), options);
   }
 
   var self = bide.impl.path;
