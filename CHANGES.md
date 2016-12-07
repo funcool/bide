@@ -1,5 +1,12 @@
 # Changelog #
 
+## Version 1.1.0 ##
+
+Date: 2016-12-07
+
+- Add support to query params parsing.
+
+
 ## Version 1.0.6 ##
 
 Date: 2016-11-27
