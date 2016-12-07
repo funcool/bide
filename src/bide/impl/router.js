@@ -69,6 +69,52 @@ goog.scope(function() {
   }
 
   /**
+   * Parses the query string to javascript object.
+   *
+   * @param {!string} query
+   * @return {Object<string,*>}
+   */
+  function parseQuery(query) {
+    var result = {};
+
+    if (! goog.isString(query)) {
+      return result;
+    }
+
+    query = query.trim().replace(/^(\?|#|&)/, '');
+
+    if (!query) {
+      return result;
+    }
+
+    var params = query.split("&");
+
+    for (var i=0; i<params.length; ++i) {
+      var parts = params[i].replace(/\+/g, ' ').split('=');
+
+      var key = parts.shift();
+      var val = parts.length > 0 ? parts.join('=') : undefined;
+      key = decodeURIComponent(key);
+
+      if (val === undefined) {
+        val = null;
+      } else {
+        val = decodeURIComponent(val);
+      }
+
+      if (result[key] === undefined) {
+        result[key] = val;
+      } else if (Array.isArray(result[key])) {
+        result[key].push(val);
+      } else {
+        result[key] = [result[key], val];
+      }
+    }
+
+    return result;
+  };
+
+  /**
    * Match a path in the router.
    *
    * @param {!Router} router
@@ -76,9 +122,21 @@ goog.scope(function() {
    * @return {Array<*>}
    */
   function match(router, path) {
+    var path, query;
+
+    if (path.indexOf("?") !== -1) {
+      var parts = path.split("?");
+      path = parts[0];
+      query = parseQuery(parts[1]);
+    } else {
+      path = path;
+      query = null;
+    }
+
     var items = router.items;
     var result = null;
     var item = null;
+
 
     for (var i=0; i<items.length; i++) {
       item = items[i];
@@ -106,7 +164,7 @@ goog.scope(function() {
       params = null;
     }
 
-    return [item.name, params];
+    return [item.name, params, query];
   }
 
   /**

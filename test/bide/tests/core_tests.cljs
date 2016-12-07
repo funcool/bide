@@ -7,11 +7,17 @@
                      ["/b/:c" :r2]
                      ["/d/:e/f" :r3]
                      ["/g/:h-i" :r4]])]
-    (t/is (= [:r1 nil] (r/match r "/a/b")))
-    (t/is (= [:r2 {:c "1"}] (r/match r "/b/1")))
-    (t/is (= [:r3 {:e "2"}] (r/match r "/d/2/f")))
-    (t/is (= [:r4 {:h-i "foo"}] (r/match r "/g/foo")))
+    (t/is (= [:r1 nil nil] (r/match r "/a/b")))
+    (t/is (= [:r2 {:c "1"} nil] (r/match r "/b/1")))
+    (t/is (= [:r3 {:e "2"} nil] (r/match r "/d/2/f")))
+    (t/is (= [:r4 {:h-i "foo"} nil] (r/match r "/g/foo")))
     (t/is (= nil (r/match r "/foo/bar")))))
+
+(t/deftest match-with-query-params-tests
+  (let [r (r/router [["/a/b" :route]])]
+    (t/is (= [:route nil {:filter "a"}] (r/match r "/a/b?filter=a")))
+    (t/is (= [:route nil {:filter ["a" "b"]}]
+             (r/match r "/a/b?filter=a&filter=b")))))
 
 (t/deftest resolve-tests
   (let [r (r/router [["/a/b" :r1]

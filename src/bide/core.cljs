@@ -67,9 +67,11 @@
   "Try to match a path to a specific route in the router, returns `nil`
   if the no match is found."
   [router path]
-  (let [[name params] (into [] (rtr/match router path))]
+  (let [[name params query] (into [] (rtr/match router path))]
     (when name
-      [name (js->clj params :keywordize-keys true)])))
+      [name
+       (js->clj params :keywordize-keys true)
+       (js->clj query :keywordize-keys true)])))
 
 (defn router
   "A helper for compile a vector of routes in a router instance."
