@@ -20,7 +20,7 @@ Add the following dependency to your `project.clj` file:
 
 [source,clojure]
 ----
-[funcool/bide "1.1.0"]
+[funcool/bide "1.2.0"]
 ----
 
 
@@ -60,6 +60,9 @@ Now, you can perform basic operations such as `match` and `resolve`:
 
 (r/resolve router :myapp/user-by-id {:id 2})
 ;; => "/api/users/2"
+
+(r/resolve router :myapp/user-by-id {:id 2} {:foobar 1})
+;; => "/api/users/2?foobar=1"
 ----
 
 In addition, you can integrate it in your ClojureScript web application using
