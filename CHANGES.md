@@ -1,5 +1,12 @@
 # Changelog #
 
+## Version 1.2.0 ##
+
+Date: 2016-12-07
+
+- Add support to resolve urls with query string encoding.
+
+
 ## Version 1.1.0 ##
 
 Date: 2016-12-07
