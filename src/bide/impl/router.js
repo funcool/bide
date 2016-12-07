@@ -7,6 +7,7 @@
 
 goog.provide("bide.impl.router");
 goog.require("bide.impl.path");
+goog.require("goog.object");
 
 goog.scope(function() {
   var _path = bide.impl.path;
