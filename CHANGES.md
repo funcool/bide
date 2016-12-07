@@ -1,5 +1,12 @@
 # Changelog #
 
+## Version 1.2.1 ##
+
+Date: 2016-12-07
+
+- Add missing dependency declaration to `goog.object` ns.
+
+
 ## Version 1.2.0 ##
 
 Date: 2016-12-07
