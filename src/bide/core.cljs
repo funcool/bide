@@ -104,8 +104,8 @@
   [router {:keys [on-navigate default] :as opts}]
   (let [default (if (vector? default) default [default nil])]
     (letfn [(-on-navigate [event]
-              (let [[name params] (-match (.-token event))]
-                (on-navigate name params)))
+              (let [[name params query] (-match (.-token event))]
+                (on-navigate name params query)))
             (-match [token]
               (let [result (match router token)]
                 (or result default)))
