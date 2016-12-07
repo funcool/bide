@@ -69,6 +69,50 @@ goog.scope(function() {
   }
 
   /**
+   * Encode query params.
+   *
+   * @param {!Object<string,*} query
+   * @return {string}
+   */
+  function encodeQueryParams(params) {
+    var encode = encodeURIComponent;
+    var keys = goog.object.getKeys(params);
+
+    var result = [];
+
+    for (var i=0; i<keys.length; i++) {
+      var key = keys[i];
+      var val = params[key];
+
+      if (val === undefined) {
+        // Do nothing
+      } else if (val === null) {
+        result.push(encode(key));
+      } else if (goog.isArray(val)) {
+        var _result = [];
+
+        for (var y=0; y<val.length; y++) {
+          var _val = val[y];
+
+          if (_val === undefined) {
+            // do nothing
+          } else if (_val === null) {
+            _result.push(encode(key));
+          } else {
+            _result.push(encode(key) + "=" + encode(_val));
+          }
+        }
+
+        result.push(_result.join("&"));
+      } else {
+        result.push(encode(key) + "=" + encode(val));
+      }
+    }
+
+    return result.join("&");
+  }
+
+  /**
    * Parses the query string to javascript object.
    *
    * @param {!string} query
@@ -89,7 +133,7 @@ goog.scope(function() {
 
     var params = query.split("&");
 
-    for (var i=0; i<params.length; ++i) {
+    for (var i=0; i<params.length; i++) {
       var parts = params[i].replace(/\+/g, ' ').split('=');
 
       var key = parts.shift();
@@ -112,7 +156,7 @@ goog.scope(function() {
     }
 
     return result;
-  };
+  }
 
   /**
    * Match a path in the router.
@@ -173,14 +217,17 @@ goog.scope(function() {
    * @param {!Router} router
    * @param {*} name
    * @param {Object<string,*>} params
+   * @param {Object<string,*>} query
    * @return {Array<?>}
    */
-  function resolve(router, name, params) {
+  function resolve(router, name, params, query) {
     var routes = router.map[name.fqn] || null;
 
     if (!goog.isDefAndNotNull(routes)) {
       return null;
     }
+
+    var result = null;
 
     // If params is empty just check all possible
     // options and return the first one that matches
@@ -191,7 +238,8 @@ goog.scope(function() {
     if (isEmpty(params)) {
       for (var i=0; i<routes.length; i++) {
         try {
-          return routes[i].format(params);
+          result = routes[i].format(params);
+          break;
         } catch (e) {}
       }
     } else {
@@ -201,12 +249,17 @@ goog.scope(function() {
         }
 
         try {
-          return routes[i].format(params);
+          result = routes[i].format(params);
+          break;
         } catch (e) {}
       }
     }
 
-    return null;
+    if (goog.isDefAndNotNull(query) && goog.isDefAndNotNull(result)) {
+      result = result + "?" + encodeQueryParams(query);
+    }
+
+    return result;
   }
 
   /**
@@ -245,4 +298,6 @@ goog.scope(function() {
   module.resolve = resolve;
   module.isRouter = isRouter;
   module.empty = empty;
+  module.parseQuery = parseQuery;
+  module.encodeQueryParams = encodeQueryParams;
 });

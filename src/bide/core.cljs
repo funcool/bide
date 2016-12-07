@@ -32,19 +32,32 @@
 ;; --- Protocols
 
 (defprotocol IRouter
-  (-navigare [_ loc params])
-  (-replace-location [_ loc params]))
+  (-navigare [_ loc params query])
+  (-replace-location [_ loc params query]))
 
 (defprotocol IPathRepr
   "Path parameters coercion protocol."
   (-repr [_] "Return a representation of object in path."))
 
 (extend-protocol IPathRepr
-  nil    (-repr [it] "")
-  object (-repr [it] (str it))
-  number (-repr [it] it)
-  string (-repr [it] it)
-  cljs.core.Keyword (-repr [it] (name it)))
+  nil
+  (-repr [it] "")
+
+  object
+  (-repr [it] (str it))
+
+  number
+  (-repr [it] it)
+
+  string
+  (-repr [it] it)
+
+  cljs.core.Keyword
+  (-repr [it] (name it))
+
+  cljs.core.PersistentVector
+  (-repr [it]
+    (into-array (map -repr it))))
 
 ;; --- Low Level Routes API
 
@@ -83,18 +96,26 @@
             (rtr/insert router path name))
           (rtr/empty) routes))
 
+(defn- adapt-params
+  [params]
+  (when params
+    (reduce-kv (fn [m k v]
+                 (aset m (key->js k) (-repr v))
+                 m)
+               (js-obj)
+               params)))
+
 (defn resolve
   "Perform a url resolve operation."
   ([router name]
-   (resolve router name {}))
+   (resolve router name nil nil))
   ([router name params]
+   (resolve router name params nil))
+  ([router name params query]
    {:pre [(router? router)]}
-   (let [params (reduce-kv (fn [m k v]
-                             (aset m (key->js k) (-repr v))
-                             m)
-                           (js-obj)
-                           params)]
-     (rtr/resolve router name params))))
+   (let [params (adapt-params params)
+         query (adapt-params query)]
+     (rtr/resolve router name params query))))
 
 ;; --- Browser History Binding API
 
@@ -122,18 +143,17 @@
         (apply on-navigate initial-loc)
         (specify! router
           IRouter
-          (-navigare [_ location params]
-            (when-let [path (resolve router location params)]
+          (-navigare [_ id params query]
+            (when-let [path (resolve router id params query)]
               (.setToken history path)))
-          (-replace-location [_ location params]
-            (when-let [path (resolve router location params)]
+          (-replace-location [_ id params query]
+            (when-let [path (resolve router id params query)]
               (.replaceToken history path))))))))
 
 (defn navigate!
   "Trigger a navigate event to a specific location."
-  ([router name]
+  ([router id] (navigate! router id nil nil))
+  ([router id params] (navigate! router id params nil))
+  ([router id params query]
    {:pre [(router? router)]}
-   (-navigare router name {}))
-  ([router name params]
-   {:pre [(router? router)]}
-   (-navigare router name params)))
+   (-navigare router id params query)))

@@ -25,7 +25,8 @@
                      ["/d/:e/f" :r3]])]
     (t/is (= "/a/b" (r/resolve r :r1)))
     (t/is (= "/b/4" (r/resolve r :r2 {:c 4})))
-    (t/is (= "/d/5/f" (r/resolve r :r3 {:e 5})))))
+    (t/is (= "/d/5/f" (r/resolve r :r3 {:e 5})))
+    (t/is (= "/a/b?foo=1" (r/resolve r :r1 nil {:foo 1})))))
 
 (enable-console-print!)
 (set! *main-cli-fn* #(t/run-tests))
