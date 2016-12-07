@@ -20,7 +20,7 @@ Add the following dependency to your `project.clj` file:
 
 [source,clojure]
 ----
-[funcool/bide "1.0.6"]
+[funcool/bide "1.1.0"]
 ----
 
 
@@ -44,10 +44,13 @@ Now, you can perform basic operations such as `match` and `resolve`:
 [source, clojure]
 ----
 (r/match router "/api/auth")
-;; => [:myapp/auth {}]
+;; => [:myapp/auth nil nil]
 
 (r/match router "/api/users/1")
-;; => [:myapp/user-by-id {:id "1"}]
+;; => [:myapp/user-by-id {:id "1"} nil]
+
+(r/match router "/api/users/id?foobar=1")
+;; => [:myapp/user-by-id {:id "1"} {:foobar "1"}]
 
 (r/match router "/api/other")
 ;; => nil
@@ -66,8 +69,8 @@ the provided builtin helpers. It uses `goog.History` API under the hood:
 ----
 (defn on-navigate
   "A function which will be called on each route change."
-  [name params]
-  (println "Route change to: " name params))
+  [name params query]
+  (println "Route change to: " name params query))
 
 (r/start! router {:default :myapp/auth
                   :on-navigate on-navigate})
