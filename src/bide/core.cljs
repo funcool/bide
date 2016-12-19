@@ -32,7 +32,7 @@
 ;; --- Protocols
 
 (defprotocol IRouter
-  (-navigare [_ loc params query])
+  (-navigate [_ loc params query])
   (-replace-location [_ loc params query]))
 
 (defprotocol IPathRepr
@@ -143,7 +143,7 @@
         (apply on-navigate initial-loc)
         (specify! router
           IRouter
-          (-navigare [_ id params query]
+          (-navigate [_ id params query]
             (when-let [path (resolve router id params query)]
               (.setToken history path)))
           (-replace-location [_ id params query]
@@ -156,4 +156,12 @@
   ([router id params] (navigate! router id params nil))
   ([router id params query]
    {:pre [(router? router)]}
-   (-navigare router id params query)))
+   (-navigate router id params query)))
+
+(defn replace!
+  "Trigger a replace event to a specific location."
+  ([router id] (replace! router id nil nil))
+  ([router id params] (replace! router id params nil))
+  ([router id params query]
+   {:pre [(router? router)]}
+   (-replace-location router id params query)))
