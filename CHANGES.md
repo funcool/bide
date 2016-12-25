@@ -1,5 +1,12 @@
 # Changelog #
 
+## Version 1.2.2 ##
+
+Date: 2016-12-25
+
+- Add support for URL replace.
+
+
 ## Version 1.2.1 ##
 
 Date: 2016-12-07
