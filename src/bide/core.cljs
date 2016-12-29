@@ -27,7 +27,8 @@
   (:require [bide.impl.router :as rtr]
             [clojure.string :as str]
             [goog.events :as e])
-  (:import goog.history.Html5History))
+  (:import goog.history.Html5History
+           goog.history.EventType))
 
 ;; --- Protocols
 
@@ -151,7 +152,7 @@
                         (.setEnabled true)))
             initial-token (-initial-token history)
             initial-loc (-match initial-token)]
-        (e/listen history History.EventType.NAVIGATE -on-navigate)
+        (e/listen history EventType.NAVIGATE -on-navigate)
         (.replaceToken history initial-token)
         (apply on-navigate initial-loc)
         (specify! router
