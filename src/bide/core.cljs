@@ -27,7 +27,7 @@
   (:require [bide.impl.router :as rtr]
             [clojure.string :as str]
             [goog.events :as e])
-  (:import goog.History))
+  (:import goog.history.Html5History))
 
 ;; --- Protocols
 
@@ -121,8 +121,14 @@
 
 (defn start!
   "Starts the bide routing handling using the goog.History
-  api as browser history event watching mechanism."
-  [router {:keys [on-navigate default] :as opts}]
+  api as browser history event watching mechanism.
+
+  If you want use the html5 history instance providing
+  a factory function that returns the Html5History object
+  instance."
+  [router {:keys [on-navigate default html5?]
+           :or {html5? false}
+           :as opts}]
   (let [default (if (vector? default) default [default nil])]
     (letfn [(-on-navigate [event]
               (let [[name params query] (-match (.-token event))]
@@ -135,7 +141,14 @@
                 (if (str/blank? token)
                   (or (apply resolve router default) "/")
                   token)))]
-      (let [history (doto (History.) (.setEnabled true))
+      (let [history (if html5?
+                      (doto (Html5History.)
+                        (.setPathPrefix "")
+                        (.setUseFragment false)
+                        (.setEnabled true))
+                      (doto (Html5History.)
+                        (.setUseFragment true)
+                        (.setEnabled true)))
             initial-token (-initial-token history)
             initial-loc (-match initial-token)]
         (e/listen history History.EventType.NAVIGATE -on-navigate)
