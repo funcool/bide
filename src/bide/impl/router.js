@@ -49,9 +49,13 @@ goog.scope(function() {
   function insert(router, path, name, options) {
     var route = new Route();
 
-    route.keys = [];
-    route.re = _path.parse(path, route.keys, options);
-    route.format = _path.compile(path);
+    var result = _path.parse(path, options);
+    route.re = result[0];
+    route.keys = result[2];
+
+    var tokens = result[1];
+
+    route.format = _path.compileTokens(tokens);
     route.name = name;
 
     if (!goog.isDefAndNotNull(router)) {

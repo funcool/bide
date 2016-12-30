@@ -37,12 +37,12 @@ goog.scope(function() {
   ].join('|'), 'g');
 
   /**
-   * Parse a string for the raw tokens.
+   * Parse a string to the raw tokens.
    *
    * @param  {string} str
    * @return {!Array}
    */
-  function parse (str) {
+  function parseTokens (str) {
     var tokens = [];
     var key = 0;
     var index = 0;
@@ -108,16 +108,6 @@ goog.scope(function() {
   }
 
   /**
-   * Compile a string to a template function for the path.
-   *
-   * @param  {string}             str
-   * @return {!function(Object=, Object=)}
-   */
-  function compile (str) {
-    return tokensToFunction(parse(str));
-  }
-
-  /**
    * Prettier encoding of URI path segments.
    *
    * @param  {string}
@@ -142,9 +132,135 @@ goog.scope(function() {
   }
 
   /**
-   * Expose a method for transforming tokens into the path function.
+   * Escape a regular expression string.
+   *
+   * @param  {string} str
+   * @return {string}
    */
-  function tokensToFunction (tokens) {
+  function escapeString (str) {
+    return str.replace(/([.+*?=^!:${}()[\]|\/\\])/g, '\\$1');
+  }
+
+  /**
+   * Escape the capturing group by escaping special characters and meaning.
+   *
+   * @param  {string} group
+   * @return {string}
+   */
+  function escapeGroup (group) {
+    return group.replace(/([=!:$\/()])/g, '\\$1');
+  }
+
+  /**
+   * Get the flags for a regexp from the options.
+   *
+   * @param  {Object} options
+   * @return {string}
+   */
+  function flags (options) {
+    return options.sensitive ? '' : 'i';
+  }
+
+  /**
+   * Pull out keys from a regexp.
+   *
+   * @param  {!RegExp} path
+   * @param  {!Array}  keys
+   * @return {!RegExp}
+   */
+  function regexpToRegexp (path) {
+    // Use a negative lookahead to match only capturing groups.
+    var groups = path.source.match(/\((?!\?)/g);
+    var keys = [];
+
+    if (groups) {
+      for (var i = 0; i < groups.length; i++) {
+        keys.push({
+          name: i,
+          prefix: null,
+          delimiter: null,
+          optional: false,
+          repeat: false,
+          partial: false,
+          asterisk: false,
+          pattern: null
+        });
+      }
+    }
+
+    return [path, keys];
+  }
+
+  /**
+   * Expose a function for taking tokens and returning a RegExp.
+   *
+   * @param  {!Array}  tokens
+   * @param  {Object=} options
+   * @return {!RegExp}
+   */
+  function tokensToRegExp (tokens, options) {
+    options = options || {};
+
+    var strict = options.strict;
+    var end = options.end !== false;
+    var route = '';
+    var lastToken = tokens[tokens.length - 1];
+    var endsWithSlash = typeof lastToken === 'string' && /\/$/.test(lastToken);
+
+    // Iterate over the tokens and create our regexp string.
+    for (var i = 0; i < tokens.length; i++) {
+      var token = tokens[i];
+
+      if (typeof token === 'string') {
+        route += escapeString(token);
+      } else {
+        var prefix = escapeString(token.prefix);
+        var capture = '(?:' + token.pattern + ')';
+
+        if (token.repeat) {
+          capture += '(?:' + prefix + capture + ')*';
+        }
+
+        if (token.optional) {
+          if (!token.partial) {
+            capture = '(?:' + prefix + '(' + capture + '))?';
+          } else {
+            capture = prefix + '(' + capture + ')?';
+          }
+        } else {
+          capture = prefix + '(' + capture + ')';
+        }
+
+        route += capture;
+      }
+    }
+
+    // In non-strict mode we allow a slash at the end of match. If the path to
+    // match already ends with a slash, we remove it for consistency. The slash
+    // is valid at the end of a path match, not in the middle. This is important
+    // in non-ending mode, where "/test/" shouldn't match "/test//route".
+    if (!strict) {
+      route = (endsWithSlash ? route.slice(0, -2) : route) + '(?:\\/(?=$))?';
+    }
+
+    if (end) {
+      route += '$';
+    } else {
+      // In non-ending mode, we need the capturing groups to match as much as
+      // possible by using a positive lookahead to the end or next path segment.
+      route += strict && endsWithSlash ? '' : '(?=\\/|$)';
+    }
+
+    return new RegExp('^' + route, flags(options));
+  }
+
+  /**
+   * Compile a string to a template function for the path tokens.
+   *
+   * @param  {!Array}             tokens
+   * @return {!function(Object=, Object=)}
+   */
+  function compileTokens (tokens) {
     // Compile all the tokens into regexps.
     var matches = new Array(tokens.length);
 
@@ -226,106 +342,18 @@ goog.scope(function() {
   }
 
   /**
-   * Escape a regular expression string.
-   *
-   * @param  {string} str
-   * @return {string}
-   */
-  function escapeString (str) {
-    return str.replace(/([.+*?=^!:${}()[\]|\/\\])/g, '\\$1');
-  }
-
-  /**
-   * Escape the capturing group by escaping special characters and meaning.
-   *
-   * @param  {string} group
-   * @return {string}
-   */
-  function escapeGroup (group) {
-    return group.replace(/([=!:$\/()])/g, '\\$1');
-  }
-
-  /**
-   * Attach the keys as a property of the regexp.
-   *
-   * @param  {!RegExp} re
-   * @param  {Array}   keys
-   * @return {!RegExp}
-   */
-  function attachKeys (re, keys) {
-    re.keys = keys;
-    return re;
-  }
-
-  /**
-   * Get the flags for a regexp from the options.
-   *
-   * @param  {Object} options
-   * @return {string}
-   */
-  function flags (options) {
-    return options.sensitive ? '' : 'i';
-  }
-
-  /**
-   * Pull out keys from a regexp.
-   *
-   * @param  {!RegExp} path
-   * @param  {!Array}  keys
-   * @return {!RegExp}
-   */
-  function regexpToRegexp (path, keys) {
-    // Use a negative lookahead to match only capturing groups.
-    var groups = path.source.match(/\((?!\?)/g);
-
-    if (groups) {
-      for (var i = 0; i < groups.length; i++) {
-        keys.push({
-          name: i,
-          prefix: null,
-          delimiter: null,
-          optional: false,
-          repeat: false,
-          partial: false,
-          asterisk: false,
-          pattern: null
-        });
-      }
-    }
-
-    return attachKeys(path, keys);
-  }
-
-  /**
-   * Transform an array into a regexp.
-   *
-   * @param  {!Array}  path
-   * @param  {Array}   keys
-   * @param  {!Object} options
-   * @return {!RegExp}
-   */
-  function arrayToRegexp (path, keys, options) {
-    var parts = [];
-
-    for (var i = 0; i < path.length; i++) {
-      parts.push(pathToRegexp(path[i], keys, options).source);
-    }
-
-    var regexp = new RegExp('(?:' + parts.join('|') + ')', flags(options));
-
-    return attachKeys(regexp, keys);
-  }
-
-  /**
    * Create a path regexp from string input.
    *
    * @param  {string}  path
    * @param  {!Array}  keys
    * @param  {!Object} options
-   * @return {!RegExp}
+   * @return {!Array}
    */
-  function stringToRegexp (path, keys, options) {
-    var tokens = parse(path);
+  function parse(path, options) {
+    if (!options) options = {};
+
+    var keys = [];
+    var tokens = parseTokens(path);
     var re = tokensToRegExp(tokens, options);
 
     // Attach keys back to the regexp.
@@ -335,116 +363,21 @@ goog.scope(function() {
       }
     }
 
-    return attachKeys(re, keys);
+    return [re, tokens, keys];
   }
 
   /**
-   * Expose a function for taking tokens and returning a RegExp.
+   * Compile a string to a template function for the path.
    *
-   * @param  {!Array}  tokens
-   * @param  {Object=} options
-   * @return {!RegExp}
+   * @param  {string}             str
+   * @return {!function(Object=, Object=)}
    */
-  function tokensToRegExp (tokens, options) {
-    options = options || {};
-
-    var strict = options.strict;
-    var end = options.end !== false;
-    var route = '';
-    var lastToken = tokens[tokens.length - 1];
-    var endsWithSlash = typeof lastToken === 'string' && /\/$/.test(lastToken);
-
-    // Iterate over the tokens and create our regexp string.
-    for (var i = 0; i < tokens.length; i++) {
-      var token = tokens[i];
-
-      if (typeof token === 'string') {
-        route += escapeString(token);
-      } else {
-        var prefix = escapeString(token.prefix);
-        var capture = '(?:' + token.pattern + ')';
-
-        if (token.repeat) {
-          capture += '(?:' + prefix + capture + ')*';
-        }
-
-        if (token.optional) {
-          if (!token.partial) {
-            capture = '(?:' + prefix + '(' + capture + '))?';
-          } else {
-            capture = prefix + '(' + capture + ')?';
-          }
-        } else {
-          capture = prefix + '(' + capture + ')';
-        }
-
-        route += capture;
-      }
-    }
-
-    // In non-strict mode we allow a slash at the end of match. If the path to
-    // match already ends with a slash, we remove it for consistency. The slash
-    // is valid at the end of a path match, not in the middle. This is important
-    // in non-ending mode, where "/test/" shouldn't match "/test//route".
-    if (!strict) {
-      route = (endsWithSlash ? route.slice(0, -2) : route) + '(?:\\/(?=$))?';
-    }
-
-    if (end) {
-      route += '$';
-    } else {
-      // In non-ending mode, we need the capturing groups to match as much as
-      // possible by using a positive lookahead to the end or next path segment.
-      route += strict && endsWithSlash ? '' : '(?=\\/|$)';
-    }
-
-    return new RegExp('^' + route, flags(options));
-  }
-
-  /**
-   * Normalize the given path string, returning a regular expression.
-   *
-   * An empty array can be passed in for the keys, which will hold the
-   * placeholder key descriptions. For example, using `/user/:id`, `keys` will
-   * contain `[{ name: 'id', delimiter: '/', optional: false, repeat: false }]`.
-   *
-   * @param  {(string|RegExp|Array)} path
-   * @param  {(Array|Object)=}       keys
-   * @param  {Object=}               options
-   * @return {!RegExp}
-   */
-  function pathToRegexp (path, keys, options) {
-    keys = keys || [];
-
-    if (!isArray(keys)) {
-      options = /** @type {!Object} */ (keys);
-      keys = [];
-    } else if (!options) {
-      options = {};
-    }
-
-    if (path instanceof RegExp) {
-      return regexpToRegexp(path, /** @type {!Array} */ (keys));
-    }
-
-    if (isArray(path)) {
-      return arrayToRegexp(
-        /** @type {!Array} */ (path),
-        /** @type {!Array} */ (keys), options);
-    }
-
-    return stringToRegexp(
-      /** @type {string} */ (path),
-      /** @type {!Array} */ (keys), options);
+  function compilePath (str) {
+    return tokensToFunction(parseTokens(str));
   }
 
   var self = bide.impl.path;
-  self.parse = pathToRegexp;
-  self.compile = compile;
-
-  // module.exports = pathToRegexp
-  // module.exports.parse = parse
-  // module.exports.compile = compile
-  // module.exports.tokensToFunction = tokensToFunction
-  // module.exports.tokensToRegExp = tokensToRegExp
+  self.parse = parse;
+  self.compilePath = compilePath;
+  self.compileTokens = compileTokens;
 });
