@@ -92,10 +92,9 @@
   [routes]
   {:pre [(vector? routes)]}
   (reduce (fn [router [path name]]
-            (assert (string? path) "path should be string")
-            (assert (keyword? name) "name should be keyword")
             (rtr/insert router path name))
-          (rtr/empty) routes))
+          (rtr/empty)
+          routes))
 
 (defn- adapt-params
   [params]
