@@ -6,6 +6,8 @@ Date: unreleased
 
 - Add support for html5 push-state (thanks to Html5History from google
   closure library).
+- Remove unused code from internal implementation.
+- Performance improvements (2x or 3x on `match` function).
 
 
 ## Version 1.2.2 ##
