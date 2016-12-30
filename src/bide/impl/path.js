@@ -11,11 +11,10 @@
 "use strict";
 
 goog.provide("bide.impl.path");
+goog.require("bide.impl.helpers");
 
 goog.scope(function() {
-  var isArray = Array.isArray || function (val) {
-    return !! val && '[object Array]' == toString.call(val);
-  };
+  var isArray = bide.impl.helpers.isArray;
 
   /**
    * The main path matching regexp utility.

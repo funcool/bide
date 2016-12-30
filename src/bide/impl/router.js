@@ -8,10 +8,13 @@
 goog.provide("bide.impl.router");
 
 goog.require("bide.impl.path");
+goog.require("bide.impl.helpers");
+
 goog.require("goog.object");
 
 goog.scope(function() {
   var _path = bide.impl.path;
+  var isArray = bide.impl.helpers.isArray;
 
   /**
    * Main router class.
@@ -91,7 +94,7 @@ goog.scope(function() {
         // Do nothing
       } else if (val === null) {
         result.push(encode(key));
-      } else if (goog.isArray(val)) {
+      } else if (isArray(val)) {
         var _result = [];
 
         for (var y=0; y<val.length; y++) {
@@ -151,7 +154,7 @@ goog.scope(function() {
 
       if (result[key] === undefined) {
         result[key] = val;
-      } else if (Array.isArray(result[key])) {
+      } else if (isArray(result[key])) {
         result[key].push(val);
       } else {
         result[key] = [result[key], val];

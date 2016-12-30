@@ -25,6 +25,7 @@
 (ns bide.core
   (:refer-clojure :exclude [empty])
   (:require [bide.impl.router :as rtr]
+            [bide.impl.helpers :as helpers]
             [clojure.string :as str]
             [goog.events :as e])
   (:import goog.history.Html5History
