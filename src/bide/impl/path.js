@@ -3,7 +3,7 @@
  *
  * Is a modified and google closure adapted implementation of
  * https://github.com/pillarjs/path-to-regexp
- * @author Andrey Antukh <niwi@niwi.nz>, 2016
+ * @author Andrey Antukh <niwi@niwi.nz>, 2016-2017
  * @author Blake Embrey <hello@blakeembrey.com>, 2014
  * @license MIT License <https://opensource.org/licenses/MIT>
  */
