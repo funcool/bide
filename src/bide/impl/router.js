@@ -6,6 +6,7 @@
  */
 
 goog.provide("bide.impl.router");
+
 goog.require("bide.impl.path");
 goog.require("goog.object");
 
@@ -49,13 +50,9 @@ goog.scope(function() {
   function insert(router, path, name, options) {
     var route = new Route();
 
-    var result = _path.parse(path, options);
-    route.re = result[0];
-    route.keys = result[2];
-
-    var tokens = result[1];
-
-    route.format = _path.compileTokens(tokens);
+    route.re = _path.parse(path, options);
+    route.keys = route.re._keys;
+    route.format = _path.compileTokens(route.re._tokens);
     route.name = name;
 
     if (!goog.isDefAndNotNull(router)) {
@@ -63,11 +60,12 @@ goog.scope(function() {
     }
 
     router.items.push(route);
+    name = name.toString();
 
-    if (router.map[name.fqn] === undefined) {
-      router.map[name.fqn] = [route];
+    if (router.map[name] === undefined) {
+      router.map[name] = [route];
     } else {
-      router.map[name.fqn].push(route);
+      router.map[name].push(route);
     }
 
     return router;

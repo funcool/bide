@@ -13,7 +13,6 @@
 goog.provide("bide.impl.path");
 
 goog.scope(function() {
-  var toString = Object.prototype.toString;
   var isArray = Array.isArray || function (val) {
     return !! val && '[object Array]' == toString.call(val);
   };
@@ -347,37 +346,28 @@ goog.scope(function() {
    * @param  {string}  path
    * @param  {!Array}  keys
    * @param  {!Object} options
-   * @return {!Array}
+   * @return {!RegExp}
    */
   function parse(path, options) {
-    if (!options) options = {};
+    if (options===undefined) options = {};
 
-    var keys = [];
     var tokens = parseTokens(path);
     var re = tokensToRegExp(tokens, options);
 
     // Attach keys back to the regexp.
-    for (var i = 0; i < tokens.length; i++) {
+    var keys = [];
+    for (var i=0; i < tokens.length; i++) {
       if (typeof tokens[i] !== 'string') {
         keys.push(tokens[i]);
       }
     }
 
-    return [re, tokens, keys];
-  }
-
-  /**
-   * Compile a string to a template function for the path.
-   *
-   * @param  {string}             str
-   * @return {!function(Object=, Object=)}
-   */
-  function compilePath (str) {
-    return tokensToFunction(parseTokens(str));
+    re._tokens = tokens;
+    re._keys = keys;
+    return re;
   }
 
   var self = bide.impl.path;
   self.parse = parse;
-  self.compilePath = compilePath;
   self.compileTokens = compileTokens;
 });
