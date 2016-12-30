@@ -35,7 +35,7 @@
 
 (defprotocol IRouter
   (-navigate [_ loc params query])
-  (-replace-location [_ loc params query]))
+  (-replace [_ loc params query]))
 
 (defprotocol IPathRepr
   "Path parameters coercion protocol."
@@ -172,7 +172,7 @@
           (-navigate [_ id params query]
             (when-let [path (resolve router id params query)]
               (.setToken history path)))
-          (-replace-location [_ id params query]
+          (-replace [_ id params query]
             (when-let [path (resolve router id params query)]
               (.replaceToken history path))))))))
 
@@ -190,4 +190,4 @@
   ([router id params] (replace! router id params nil))
   ([router id params query]
    {:pre [(router? router)]}
-   (-replace-location router id params query)))
+   (-replace router id params query)))
