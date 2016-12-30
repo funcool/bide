@@ -63,6 +63,27 @@
 
 ;; --- Low Level Routes API
 
+(defn- props->js
+  [params]
+  (when params
+    (reduce-kv (fn [m k v]
+                 (aset m (key->js k) (-repr v))
+                 m)
+               (js-obj)
+               params)))
+
+(defn- js->props
+  [params]
+  (when params
+    (persistent!
+     (reduce (fn [acc key]
+               (let [value (aget params key)]
+                 (if (helpers/isArray value)
+                   (assoc! acc (keyword key) (vec value))
+                   (assoc! acc (keyword key) value))))
+             (transient {})
+             (helpers/keys params)))))
+
 (defn ^boolean router?
   "Check if the `v` is a Router instance."
   [v]
@@ -82,11 +103,11 @@
   "Try to match a path to a specific route in the router, returns `nil`
   if the no match is found."
   [router path]
-  (let [[name params query] (into [] (rtr/match router path))]
+  (let [[name params query] (vec (rtr/match router path))]
     (when name
       [name
-       (js->clj params :keywordize-keys true)
-       (js->clj query :keywordize-keys true)])))
+       (js->props params)
+       (js->props query)])))
 
 (defn router
   "A helper for compile a vector of routes in a router instance."
@@ -97,15 +118,6 @@
           (rtr/empty)
           routes))
 
-(defn- adapt-params
-  [params]
-  (when params
-    (reduce-kv (fn [m k v]
-                 (aset m (key->js k) (-repr v))
-                 m)
-               (js-obj)
-               params)))
-
 (defn resolve
   "Perform a url resolve operation."
   ([router name]
@@ -114,8 +126,8 @@
    (resolve router name params nil))
   ([router name params query]
    {:pre [(router? router)]}
-   (let [params (adapt-params params)
-         query (adapt-params query)]
+   (let [params (props->js params)
+         query (props->js query)]
      (rtr/resolve router name params query))))
 
 ;; --- Browser History Binding API
