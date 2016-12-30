@@ -224,7 +224,7 @@ goog.scope(function() {
    * @return {Array<?>}
    */
   function resolve(router, name, params, query) {
-    var routes = router.map[name.fqn] || null;
+    var routes = router.map[name.toString()] || null;
 
     if (!goog.isDefAndNotNull(routes)) {
       return null;
