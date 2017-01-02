@@ -1,4 +1,4 @@
-(defproject funcool/bide "1.3.0-SNAPSHOT"
+(defproject funcool/bide "1.3.0"
   :description "Simple routing for ClojureScript"
   :url "https://github.com/funcool/bide"
   :license {:name "BSD (2-Clause)"

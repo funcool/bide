@@ -1,8 +1,8 @@
 # Changelog #
 
-## Version 1.3.0-SNAPSHOT
+## Version 1.3.0
 
-Date: unreleased
+Date: 2017-01-02
 
 - Add support for html5 push-state (thanks to Html5History from google
   closure library).
