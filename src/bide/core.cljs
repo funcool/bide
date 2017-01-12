@@ -163,11 +163,18 @@
                         (.setUseFragment true)
                         (.setEnabled true)))
             initial-token (-initial-token history)
-            initial-loc (-match initial-token)]
-        (e/listen history EventType.NAVIGATE -on-navigate)
+            initial-loc (-match initial-token)
+            lkey (e/listen history EventType.NAVIGATE -on-navigate)]
+
         (.replaceToken history initial-token)
         (apply on-navigate initial-loc)
+
         (specify! router
+          Object
+          (close [_]
+            (e/unlistenByKey lkey)
+            (.setEnabled history false))
+
           IRouter
           (-navigate [_ id params query]
             (when-let [path (resolve router id params query)]
