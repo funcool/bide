@@ -1,5 +1,12 @@
 # Changelog #
 
+## Version 1.4.0
+
+Date: 2017-01-12
+
+- Add the ability to stop the router.
+
+
 ## Version 1.3.0
 
 Date: 2017-01-02
