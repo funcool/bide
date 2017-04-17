@@ -133,14 +133,21 @@
 ;; --- Browser History Binding API
 
 (defn start!
-  "Starts the bide routing handling using the goog.History
-  api as browser history event watching mechanism.
+  "Starts the bide routing handling using the `goog.history.Html5History` API as
+  browser history event watching mechanism.
 
-  If you want use the html5 history instance providing
-  a factory function that returns the Html5History object
-  instance."
-  [router {:keys [on-navigate default html5?]
-           :or {html5? false}
+  Accepts router and configuration map. Required configuration keys are
+  `:on-navigate` and `:default`. `:on-navigate` is a function that would be
+  called each time route is changed providing route id, params and query as
+  arguments. `:default` used as default route id when URL doesn't match any
+  route registered in router. Optional configuration keys are `:html5?` (`false`
+  by default) and `:html5history` (new `goog.history.Html5History` instance by
+  default). Passing anything that evaluates to logical false as value of
+  `:html5?` would configure history to use fragment to store token. Use
+  `:html5history` to specify custom `Html5History` instance that would be used
+  to manage history events."
+  [router {:keys [on-navigate default html5? html5history]
+           :or {html5? false html5history (Html5History.)}
            :as opts}]
   (let [default (if (vector? default) default [default nil])]
     (letfn [(-on-navigate [event]
@@ -155,11 +162,11 @@
                   (or (apply resolve router default) "/")
                   token)))]
       (let [history (if html5?
-                      (doto (Html5History.)
+                      (doto html5history
                         (.setPathPrefix "")
                         (.setUseFragment false)
                         (.setEnabled true))
-                      (doto (Html5History.)
+                      (doto html5history
                         (.setUseFragment true)
                         (.setEnabled true)))
             initial-token (-initial-token history)
