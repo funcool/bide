@@ -79,10 +79,10 @@ the provided builtin helpers. It uses `goog.History` API under the hood:
                   :on-navigate on-navigate})
 ----
 
-Also, you can pass customized instance of `goog.history.Html5History` as value
-of `:html5history` key of second argument and `bide` would use it to manage
-history events, and/or pass `true` as value of `:html5?` key to stop using '#'
-in URLs.
+Also, you can pass factory function that returns instance of
+`goog.history.Html5History` as value of `:html5history` key of second argument
+and `bide` would use it to manage history events, and/or pass `true` as value of
+`:html5?` key to stop using '#' in URLs.
 
 Finally, you can force the navigation trigger by using the `navigate!` helper
 function:

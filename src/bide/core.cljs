@@ -143,11 +143,12 @@
   route registered in router. Optional configuration keys are `:html5?` (`false`
   by default) and `:html5history` (new `goog.history.Html5History` instance by
   default). Passing anything that evaluates to logical false as value of
-  `:html5?` would configure history to use fragment to store token. Use
-  `:html5history` to specify custom `Html5History` instance that would be used
-  to manage history events."
+  `:html5?` would configure history to use fragment to store token. Pass factory
+  function that returns instance of `goog.history.Html5History` to
+  `:html5history` when you need to do some customizations to history instance
+  used to manage history events."
   [router {:keys [on-navigate default html5? html5history]
-           :or {html5? false html5history (Html5History.)}
+           :or {html5? false}
            :as opts}]
   (let [default (if (vector? default) default [default nil])]
     (letfn [(-on-navigate [event]
@@ -161,7 +162,8 @@
                 (if (str/blank? token)
                   (or (apply resolve router default) "/")
                   token)))]
-      (let [history (if html5?
+      (let [html5history (if (fn? html5history) (html5history) (Html5History.))
+            history (if html5?
                       (doto html5history
                         (.setPathPrefix "")
                         (.setUseFragment false)

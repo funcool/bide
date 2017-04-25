@@ -2,10 +2,11 @@
 
 ## Version 1.5.0
 
-Date: 2017-04-17
+Date: 2017-04-25
 
-- Add the ability to pass customized instance of `goog.history.Html5History` to be
-  used to manage history events.
+- Add the ability to provide customized instance of `goog.history.Html5History`
+  that would be used to manage history events.
+
 
 ## Version 1.4.0
 
