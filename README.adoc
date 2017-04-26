@@ -79,6 +79,11 @@ the provided builtin helpers. It uses `goog.History` API under the hood:
                   :on-navigate on-navigate})
 ----
 
+Also, you can pass factory function that returns instance of
+`goog.history.Html5History` as value of `:html5history` key of second argument
+and `bide` would use it to manage history events, and/or pass `true` as value of
+`:html5?` key to stop using '#' in URLs.
+
 Finally, you can force the navigation trigger by using the `navigate!` helper
 function:
 
@@ -86,6 +91,9 @@ function:
 ----
 (r/navigate! router :myapp/user-by-id {:id 10})
 ----
+
+Or if you don't want to add entry into history use `replace!` helper function
+instead.
 
 
 == How to Contribute?
