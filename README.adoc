@@ -20,7 +20,7 @@ Add the following dependency to your `project.clj` file:
 
 [source,clojure]
 ----
-[funcool/bide "1.4.0"]
+[funcool/bide "1.5.0"]
 ----
 
 
