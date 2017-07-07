@@ -49,7 +49,7 @@ Now, you can perform basic operations such as `match` and `resolve`:
 (r/match router "/api/users/1")
 ;; => [:myapp/user-by-id {:id "1"} nil]
 
-(r/match router "/api/users/id?foobar=1")
+(r/match router "/api/users/1?foobar=1")
 ;; => [:myapp/user-by-id {:id "1"} {:foobar "1"}]
 
 (r/match router "/api/other")
