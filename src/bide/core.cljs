@@ -23,7 +23,7 @@
 ;; OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (ns bide.core
-  (:refer-clojure :exclude [empty])
+  (:refer-clojure :exclude [empty resolve])
   (:require [bide.impl.router :as rtr]
             [bide.impl.helpers :as helpers]
             [clojure.string :as str]
