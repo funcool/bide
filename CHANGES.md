@@ -1,5 +1,12 @@
 # Changelog #
 
+## Version 1.5.1
+
+Date: 2017-07-26
+
+- Fix compatibility with latest cljs compiler.
+
+
 ## Version 1.5.0
 
 Date: 2017-04-25
