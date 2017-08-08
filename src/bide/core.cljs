@@ -176,7 +176,6 @@
             lkey (e/listen history EventType.NAVIGATE -on-navigate)]
 
         (.replaceToken history initial-token)
-        (apply on-navigate initial-loc)
 
         (specify! router
           Object
