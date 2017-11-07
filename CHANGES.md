@@ -1,5 +1,12 @@
 # Changelog #
 
+## Version 1.6.0
+
+Date: 2017-10-07
+
+- Remove double navigation hook on start (thanks to @pepe).
+
+
 ## Version 1.5.1
 
 Date: 2017-07-26
