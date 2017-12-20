@@ -151,12 +151,12 @@
            :or {html5? false}
            :as opts}]
   (let [default (if (vector? default) default [default nil])]
-    (letfn [(-on-navigate [event]
-              (let [[name params query] (-match (.-token event))]
-                (on-navigate name params query)))
-            (-match [token]
+    (letfn [(-match [token]
               (let [result (match router token)]
                 (or result default)))
+            (-on-navigate [event]
+              (let [[name params query] (-match (.-token event))]
+                (on-navigate name params query)))
             (-initial-token [history]
               (let [token (.getToken history)]
                 (if (str/blank? token)
