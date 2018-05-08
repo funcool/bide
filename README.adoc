@@ -110,7 +110,7 @@ documentation.
 
 Most libraries work with native Clojure data structures for representing the
 routing configuration. It's a great idea, but it does not work very well once
-your proyect scales. Things get out of hand pretty fast.
+your project scales. Things get out of hand pretty fast.
 
 An example of this with link:https://github.com/juxt/bidi[bidi] routing library:
 
