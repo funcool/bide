@@ -28,7 +28,8 @@
             [bide.impl.helpers :as helpers]
             [clojure.string :as str]
             [goog.events :as e])
-  (:import goog.history.Html5History
+  (:import bide.impl.TokenTransformer
+           goog.history.Html5History
            goog.history.EventType))
 
 ;; --- Protocols
@@ -130,6 +131,12 @@
          query (props->js query)]
      (rtr/resolve router name params query))))
 
+(defn token-transformer
+  "Construct an object that implements
+  `goog.history.Html5History.TokenTransformer` with query string support."
+  []
+  (TokenTransformer.))  
+
 ;; --- Browser History Binding API
 
 (defn start!
@@ -162,7 +169,9 @@
                 (if (str/blank? token)
                   (or (apply resolve router default) "/")
                   token)))]
-      (let [html5history (if (fn? html5history) (html5history) (Html5History.))
+      (let [html5history (if (fn? html5history)
+                           (html5history)
+                           (Html5History. nil (token-transformer)))
             history (if html5?
                       (doto html5history
                         (.setPathPrefix "")

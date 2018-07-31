@@ -84,6 +84,10 @@ Also, you can pass factory function that returns instance of
 and `bide` would use it to manage history events, and/or pass `true` as value of
 `:html5?` key to stop using '#' in URLs.
 
+Note that when `:html5?` is `true`, the built-in instance of `Html5History` uses
+a custom `goog.history.Html5History.TokenTransformer` to allow it to handle
+query parameters. You can construct a transformer with `token-transformer`.
+
 Finally, you can force the navigation trigger by using the `navigate!` helper
 function:
 
