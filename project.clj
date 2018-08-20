@@ -3,8 +3,8 @@
   :url "https://github.com/funcool/bide"
   :license {:name "BSD (2-Clause)"
             :url "http://opensource.org/licenses/BSD-2-Clause"}
-  :dependencies [[org.clojure/clojure "1.8.0" :scope "provided"]
-                 [org.clojure/clojurescript "1.9.671" :scope "provided"]]
+  :dependencies [[org.clojure/clojure "1.9.0" :scope "provided"]
+                 [org.clojure/clojurescript "1.10.238" :scope "provided"]]
 
   :deploy-repositories {"releases" :clojars
                         "snapshots" :clojars}
@@ -13,7 +13,7 @@
   :jar-exclusions [#"\.swp|\.swo|user.clj"]
 
   :profiles
-  {:dev {:dependencies [[bidi "2.0.9"]]}}
+  {:dev {:dependencies [[bidi "2.1.3"]]}}
 
   :codeina {:sources ["src"]
             :reader :clojurescript
@@ -22,4 +22,4 @@
             :src-uri-prefix "#L"}
 
   :plugins [[funcool/codeina "0.5.0"]
-            [lein-ancient "0.6.10"]])
+            [lein-ancient "0.6.15"]])
