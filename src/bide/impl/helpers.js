@@ -26,7 +26,7 @@ goog.scope(function() {
   };
 
   self.isArray = Array.isArray || function (val) {
-    return !! val && '[object Array]' == toString.call(val);
+    return !! val && '[object Array]' == Object.prototype.toString.call(val);
   };
 });
 
