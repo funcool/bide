@@ -262,6 +262,10 @@ goog.scope(function() {
     }
 
     if (goog.isDefAndNotNull(query) && goog.isDefAndNotNull(result)) {
+      var q = result.indexOf('?');
+      if (q >= 0) {
+        result = result.substring(0, q);
+      }
       result = result + "?" + encodeQueryParams(query);
     }
 
