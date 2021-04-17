@@ -58,7 +58,7 @@ goog.scope(function() {
     route.format = _path.compileTokens(route.re._tokens);
     route.name = name;
 
-    if (!goog.isDefAndNotNull(router)) {
+    if (router == null) {
       router = new Router();
     }
 
@@ -127,7 +127,7 @@ goog.scope(function() {
   function parseQuery(query) {
     var result = {};
 
-    if (! goog.isString(query)) {
+    if (! typeof val == 'string') {
       return result;
     }
 
@@ -192,12 +192,12 @@ goog.scope(function() {
       item = items[i];
       result = item.re.exec(path);
 
-      if (!goog.isNull(result)) {
+      if (result !== null) {
         break;
       }
     }
 
-    if (goog.isNull(result)) {
+    if (result === null) {
       return null;
     }
 
@@ -205,7 +205,7 @@ goog.scope(function() {
     for (var i=0; i<item.keys.length; i++) {
       var key = item.keys[i];
       var res = result[(i + 1)];
-      if (goog.isDefAndNotNull(res)) {
+      if (res != null) {
         params[key.name] = res;
       }
     }
@@ -229,7 +229,7 @@ goog.scope(function() {
   function resolve(router, name, params, query) {
     var routes = router.map[name.toString()] || null;
 
-    if (!goog.isDefAndNotNull(routes)) {
+    if (routes == null) {
       return null;
     }
 
@@ -261,7 +261,7 @@ goog.scope(function() {
       }
     }
 
-    if (goog.isDefAndNotNull(query) && goog.isDefAndNotNull(result)) {
+    if (query != null && result != null) {
       result = result + "?" + encodeQueryParams(query);
     }
 

@@ -19,7 +19,7 @@ goog.scope(function() {
   };
 
   self.keys = function(o) {
-    if (!goog.isDefAndNotNull(o)) {
+    if (o == null) {
       return [];
     }
     return Object.keys(o);
