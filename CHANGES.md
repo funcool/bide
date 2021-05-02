@@ -1,5 +1,12 @@
 # Changelog #
 
+## Version 1.7.0
+
+Date: 2021-05-02
+
+- Update deps and compatibility issues with latest gclosure library.
+
+
 ## Version 1.6.0
 
 Date: 2017-10-07
