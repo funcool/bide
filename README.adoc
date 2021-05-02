@@ -13,6 +13,8 @@ ____
 Egiak ez ditu bi bide
 ____
 
+NOTE: **Looking for a maintainer.**
+
 
 == Install
 
